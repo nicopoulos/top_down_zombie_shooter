@@ -1,0 +1,25 @@
+#include "engine.h"
+#include "Graphics/graphics.h"
+#include "Audio/audio.h"
+#include "ECS/ecs.h"
+
+#include "Gameloop/gameloop.h"
+
+#include <SDL2/SDL.h>
+
+int engine_init()
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    graphics_init();
+    audio_init();
+    return 0;
+}
+
+int engine_quit()
+{
+    //SDL_Quit();
+    return 0;
+}
+
+
