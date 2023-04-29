@@ -1,9 +1,7 @@
 #include "engine.h"
-#include "Graphics/graphics.h"
-#include "Audio/audio.h"
-#include "ECS/ecs.h"
+#include "_graphics.h"
+#include "_audio.h"
 
-#include "Gameloop/gameloop.h"
 
 #include <SDL2/SDL.h>
 

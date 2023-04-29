@@ -4,7 +4,7 @@ RELEASEFLAGS = -std=c17
 LIBS = -lm -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 
-SOURCEFILES = Code/*.c Code/Engine/*.c Code/Engine/Graphics/*.c Code/Engine/Audio/*.c
+SOURCEFILES = Code/*.c Code/Engine/*.c
 
 build:
 	$(CC) $(BUILDFLAGS) $(SOURCEFILES) $(LIBS)

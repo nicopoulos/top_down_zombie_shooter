@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "audio.h"
+#include "_audio.h"
 
 SDL_AudioDeviceID audio_device;
 
