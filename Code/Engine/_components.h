@@ -20,7 +20,7 @@ typedef struct transform_t
 
 typedef struct spritesheet_t
 {
-    SDL_Rect sprite;
+    SDL_Rect* sprite;
     SDL_Texture* texture;
 } spritesheet_t;
 

@@ -22,6 +22,12 @@ double screen_center_x;
 double screen_center_y;
 
 
+typedef struct camera_t
+{
+    double vpx_per_meter;
+    vector_t position;
+
+} camera_t;
 
 camera_t camera;
 
@@ -29,7 +35,7 @@ camera_t camera;
 
 int graphics_init()
 {
-    window = SDL_CreateWindow("hallo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1, SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == NULL)
         return -1;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -48,9 +54,6 @@ int graphics_init()
 
     camera.vpx_per_meter = 1000; // 1 vpx = 1mm -> 1m = 1000 vpx.
     camera.position = (vector_t){0, 0};
-
-    printf("virtual_pixel: (%f, %f)\n", virtual_pixel_width, virtual_pixel_height);
-    printf("screen_center: (%f, %f)\n", screen_center_x, screen_center_y);
 
 
 
@@ -98,6 +101,18 @@ int camera_zoom(double factor)
     return 0;
 }
 
+void camera_set_position(double x, double y)
+{
+    camera.position.x = x;
+    camera.position.y = y;
+}
+
+void camera_move(double dx, double dy)
+{
+    camera.position.x += dx;
+    camera.position.y += dy;
+}
+
 void show_buffer()
 {
     SDL_RenderPresent(renderer);
@@ -106,6 +121,11 @@ void show_buffer()
 int clear_buffer()
 {
     return SDL_RenderClear(renderer);
+}
+
+int set_render_colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    return SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
 
@@ -120,15 +140,23 @@ int draw_world_element(const transform_t* transform, const spritesheet_t* sprite
     double w = camera.vpx_per_meter * transform->scale.x;
     double h = camera.vpx_per_meter * transform->scale.y;
     double x = screen_center_x + camera.vpx_per_meter * (transform->position.x - camera.position.x);
-    double y = screen_center_y + camera.vpx_per_meter * (-(transform->position.y - camera.position.y));
-    printf("x: %f, y: %f\n", x, y);
+    double y = screen_center_y + camera.vpx_per_meter * ((transform->position.y - camera.position.y));
     x -= 0.5 * w;
     y -= 0.5 * h;
     SDL_Rect dstrect = {.x = virtual_pixel_width * x, .y = virtual_pixel_height * y, .w = virtual_pixel_width * w, .h = virtual_pixel_height * h};
-    return SDL_RenderCopy(renderer, spritesheet->texture, & (spritesheet->sprite), &dstrect);
+    return SDL_RenderCopyEx(renderer, spritesheet->texture, spritesheet->sprite, &dstrect, transform->rotation, NULL, SDL_FLIP_NONE);
 }
 
-// int draw_hud_element(const )
+/*
+int draw_hud_element(const transform_t* transform, const spritesheet_t* spritesheet)
+{
+    double w virtual_pixel_width * transform->scale.x;
+
+    return SDL_RenderCopy(renderer, spriteshe)
+
+}
+
+*/
 
 
 

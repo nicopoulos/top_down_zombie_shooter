@@ -17,6 +17,11 @@ int engine_init();
 int engine_quit();
 
 // graphics functions
-extern int draw_world_element(const transform_t* transform, const spritesheet_t* spritesheet);
+
+// ecs functions
+
+// audio functions
+
+// physics functions
 
 #endif

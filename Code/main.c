@@ -3,9 +3,19 @@
 #include "Engine/engine.h"
 #include "game.h"
 
+SDL_GameController* gamepad;
+
 int main()
 {
-    engine_init();
+    if (engine_init())
+        return -1;
+
+    gamepad = SDL_GameControllerOpen(0);
+    if (gamepad == NULL)
+    {
+        fprintf(stderr, "%s\n", SDL_GetError());
+        return -1;
+    }
 
     game();
 

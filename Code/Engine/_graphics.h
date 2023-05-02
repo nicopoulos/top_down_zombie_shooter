@@ -9,25 +9,20 @@ int graphics_init();
 int graphics_quit();
 
 
-
-typedef struct camera_t
-{
-    double vpx_per_meter;
-    vector_t position;
-
-} camera_t;
-
-extern camera_t camera;
-
 int camera_zoom(double factor);
 
 
 int camera_set_zoom(double zoom);
 
+void camera_set_position(double x, double y);
+
+void camera_move(double dx, double dy);
 
 
 
 void show_buffer();
+
+int set_render_colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 int clear_buffer();
 
