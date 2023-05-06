@@ -5,7 +5,7 @@
 
 #define BULLET_WIDTH 0.3
 #define BULLET_HEIGHT 0.15
-#define BULLET_SPEED 10
+#define BULLET_SPEED 15
 
 void bullet_set_state_from_player(bullet_t* bullet, const player_t* player)
 {

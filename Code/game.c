@@ -29,13 +29,16 @@ bool game_running;
 
 // ressources
 SDL_Texture* bullet_texture;
+SDL_Texture* zombie_texture;
 
 // game objects
 player_t player;
-bullet_t test_bullet;
 
 #define MAX_NUM_BULLETS 30
 bullet_t bullets[MAX_NUM_BULLETS];
+
+#define MAX_NUM_ZOMBIES 30
+zombie_t zombies[MAX_NUM_ZOMBIES];
 
 
 int game()
@@ -94,14 +97,27 @@ int setup()
     player.ammunition = 50;
     player.spritesheet.texture = load_texture("Assets/Sprites/player.png");
     player.spritesheet.sprite = NULL;
+    player.shooting_cooldown_clock = 0;
 
     // bullets
-    bullet_texture = load_texture("Assets/Sprites/bullet.png");
+    bullet_texture = load_texture("Assets/Sprites/bullet_4.png");
 
     for (int i = 0; i < MAX_NUM_BULLETS; i++)
     {
         bullets[i].exists = false;;
     }
+
+    zombie_texture = load_texture("Assets/Sprites/zombie.png");
+    for (int i = 0; i < MAX_NUM_ZOMBIES; i++)
+    {
+        zombies[i].exists = false;
+    }
+    zombies[0].exists = true;
+    zombies[0].spritesheet.texture = zombie_texture;
+    zombies[0].spritesheet.sprite = NULL;
+    zombies[0].velocity.x = 0;
+    zombies[0].velocity.y = 0;
+    zombies[0].transform = (transform_t){.position = {0, 0}, .rotation = 0, .scale = {1, 1}};
 
 
 

@@ -9,6 +9,7 @@ typedef struct player_t
     spritesheet_t spritesheet;
     unsigned int health;
     unsigned int ammunition;
+    double shooting_cooldown_clock;
     vector_t velocity;
 
 } player_t;
@@ -21,6 +22,15 @@ typedef struct bullet_t
     bool exists;
 
 } bullet_t;
+
+typedef struct zombie_t
+{
+    transform_t transform;
+    spritesheet_t spritesheet;
+    vector_t velocity;
+    bool exists;
+
+} zombie_t;
 
 
 
