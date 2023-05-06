@@ -5,6 +5,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#define RADIAN_DEGREE_CONVERSION_FACTOR (57.295779513)
+
 SDL_Window* window;
 SDL_Renderer* renderer;
 
@@ -143,8 +145,9 @@ int draw_world_element(const transform_t* transform, const spritesheet_t* sprite
     double y = screen_center_y + camera.vpx_per_meter * ((transform->position.y - camera.position.y));
     x -= 0.5 * w;
     y -= 0.5 * h;
+    double rotation = transform->rotation * RADIAN_DEGREE_CONVERSION_FACTOR;
     SDL_Rect dstrect = {.x = virtual_pixel_width * x, .y = virtual_pixel_height * y, .w = virtual_pixel_width * w, .h = virtual_pixel_height * h};
-    return SDL_RenderCopyEx(renderer, spritesheet->texture, spritesheet->sprite, &dstrect, transform->rotation, NULL, SDL_FLIP_NONE);
+    return SDL_RenderCopyEx(renderer, spritesheet->texture, spritesheet->sprite, &dstrect, rotation, NULL, SDL_FLIP_NONE);
 }
 
 /*

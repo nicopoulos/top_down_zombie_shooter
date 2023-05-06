@@ -14,7 +14,6 @@ int main()
     if (gamepad == NULL)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        return -1;
     }
 
     game();
