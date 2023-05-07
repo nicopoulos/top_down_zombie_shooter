@@ -24,5 +24,9 @@ typedef struct spritesheet_t
     SDL_Texture* texture;
 } spritesheet_t;
 
+typedef struct circle_collider_t
+{
+    double radius;
+} circle_collider_t;
 
 #endif

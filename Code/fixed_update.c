@@ -1,5 +1,6 @@
 #include "gameloop.h"
 #include "objects.h"
+#include "Engine/engine.h"
 
 #include <math.h>
 
@@ -20,7 +21,8 @@ extern zombie_t zombies[MAX_NUM_ZOMBIES];
 void fixed_update(double time)
 {
     // player check out of bounds
-    // bullets check out of bounds
+
+    // bullets
     for (int i = 0; i < MAX_NUM_BULLETS; i++)
     {
         if (bullets[i].exists)
@@ -31,12 +33,15 @@ void fixed_update(double time)
             }
         }
     }
-    // update zombie "AI" 
+    
+    
+    // zombies
 
     for (int i = 0; i < MAX_NUM_ZOMBIES; i++)
     {
         if (zombies[i].exists)
         {
+            // zombie AI
             double dx = player.transform.position.x - zombies[i].transform.position.x;
             double dy = player.transform.position.y - zombies[i].transform.position.y;
 
@@ -55,8 +60,36 @@ void fixed_update(double time)
                 zombies[i].velocity = (vector_t){0, 0};
             }
 
+            // zombie collision with player
+            if (collision_player_zombie(&player, &(zombies[i])))
+            {
+                printf("player collided with zombie\n");
+            }
+
+            // zombie collision with bullet
+
+            for (int j = 0; j < MAX_NUM_BULLETS; j++)
+            {
+                if (bullets[j].exists)
+                {
+                    if (collision_bullet_zombie(&(bullets[j]), &(zombies[i])))
+                    {
+                        bullets[j].exists = false;
+                        zombies[i].exists = false;
+                        break;
+                    }
+                }
+            }
+
+
+
             
         }
     }
+
+
+    // collision detection
+
+
 
 }

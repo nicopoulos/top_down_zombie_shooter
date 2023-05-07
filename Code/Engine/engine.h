@@ -10,6 +10,7 @@
 #include "_components.h"
 #include "_graphics.h"
 #include "_audio.h"
+#include "_physics.h"
 
 // engine functions
 int engine_init();
