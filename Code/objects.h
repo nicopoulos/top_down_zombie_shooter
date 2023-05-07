@@ -8,9 +8,11 @@ typedef struct player_t
     transform_t transform;
     spritesheet_t spritesheet;
     circle_collider_t collider;
-    unsigned int health;
+    int health;
     unsigned int ammunition;
     double shooting_cooldown_clock;
+    double invincibility_cooldown_clock;
+    bool invincible;
     vector_t velocity;
 
 } player_t;

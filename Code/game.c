@@ -99,6 +99,8 @@ int setup()
     player.spritesheet.sprite = NULL;
     player.shooting_cooldown_clock = 0;
     player.collider.radius = 0.5;
+    player.invincibility_cooldown_clock = 0;
+    player.invincible = false;
 
     // bullets
     bullet_texture = load_texture("Assets/Sprites/bullet_4.png");
@@ -111,15 +113,18 @@ int setup()
     zombie_texture = load_texture("Assets/Sprites/zombie.png");
     for (int i = 0; i < MAX_NUM_ZOMBIES; i++)
     {
+        zombies[i].exists = false;
+    }
+    for (int i = 0; i < 4; i++)
+    {
         zombies[i].exists = true;
         zombies[i].spritesheet.texture = zombie_texture;
         zombies[i].spritesheet.sprite = NULL;
         zombies[i].velocity.x = 0;
         zombies[i].velocity.y = 0;
-        zombies[i].transform = (transform_t){.position = {i, -i}, .rotation = 0, .scale = {1, 1}};
+        zombies[i].transform = (transform_t){.position = {7, -2}, .rotation = 0, .scale = {1, 1}};
         zombies[i].collider.radius = 0.5;
     }
-
 
 
 

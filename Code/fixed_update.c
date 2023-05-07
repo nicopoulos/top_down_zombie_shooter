@@ -5,9 +5,11 @@
 #include <math.h>
 
 #define PI 3.1415926
+extern bool game_running;
 
 #define PLAYER_HORIZONTAL_BORDER 4
 #define PLAYER_VERTICAL_BORDER 3
+#define INVINCIBILITY_TIME 1.4
 extern player_t player;
 
 #define BULLET_DESPAWN_DISTANCE 13
@@ -18,9 +20,19 @@ extern bullet_t bullets[MAX_NUM_BULLETS];
 #define ZOMBIE_SPEED 2.5
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
 
-void fixed_update(double time)
+void fixed_update(double delta_time)
 {
-    // player check out of bounds
+    if (player.invincible)
+    {
+        player.invincibility_cooldown_clock += delta_time;
+        if (player.invincibility_cooldown_clock >= INVINCIBILITY_TIME)
+        {
+            player.invincibility_cooldown_clock = 0;
+            player.invincible = false;
+
+        }
+
+    }
 
     // bullets
     for (int i = 0; i < MAX_NUM_BULLETS; i++)
@@ -61,9 +73,13 @@ void fixed_update(double time)
             }
 
             // zombie collision with player
-            if (collision_player_zombie(&player, &(zombies[i])))
+            if (collision_player_zombie(&player, &(zombies[i])) && player.invincible == false)
             {
-                printf("player collided with zombie\n");
+                player.health -= 20;
+                if (player.health <= 0)
+                    game_running = false;
+                else
+                    player.invincible = true;
             }
 
             // zombie collision with bullet
@@ -80,9 +96,6 @@ void fixed_update(double time)
                     }
                 }
             }
-
-
-
             
         }
     }

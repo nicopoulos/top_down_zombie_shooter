@@ -32,7 +32,7 @@ void render()
             draw_world_element(&(zombies[i].transform), &(zombies[i].spritesheet));
     }
 
-
-    draw_world_element(&(player.transform), &(player.spritesheet));
+    if ((int)(player.invincibility_cooldown_clock * 12) % 2 == 0)
+        draw_world_element(&(player.transform), &(player.spritesheet));
     show_buffer();
 }
