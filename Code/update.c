@@ -5,6 +5,8 @@
 
 #define RADIAN_DEGREE_CONVERSION_FACTOR (57.295779513)
 
+#define DIAGONAL_MOVEMENT_FACTOR (0.7071)
+
 #define PI 3.1415926
 
 #define CAMERA_SPEED_S 2
@@ -49,6 +51,40 @@ void update(double delta_time)
                 game_running = false;
                 break;
             }
+            case SDL_KEYDOWN:
+            {
+                switch (event.key.keysym.scancode)
+                {
+                    case SDL_SCANCODE_ESCAPE:
+                    {
+                        game_running = false;
+                        break;
+                    }
+                    case SDL_SCANCODE_SPACE:
+                    {
+                        if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
+                        {
+                            player.shooting_cooldown_clock = 0;
+                            int i;
+                            for(i = 0; i < MAX_NUM_BULLETS ; i++)
+                            {
+                                if (bullets[i].exists == false)
+                                {
+                                    bullets[i].exists = true;
+                                    bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
+                                    bullet_set_state_from_player(&(bullets[i]), &player);
+                                    
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                break;
+            }
             case SDL_CONTROLLERDEVICEREMOVED:
             {
                 gamepad = NULL;
@@ -68,25 +104,33 @@ void update(double delta_time)
             }
             case SDL_CONTROLLERBUTTONDOWN:
             {
-                if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
+                switch(event.cbutton.button)
                 {
-                    player.shooting_cooldown_clock = 0;
-                    int i;
-                    for(i = 0; i < MAX_NUM_BULLETS ; i++)
+                    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
                     {
-                        if (bullets[i].exists == false)
+                        if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
                         {
-                            bullets[i].exists = true;
-                            bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
-                            bullet_set_state_from_player(&(bullets[i]), &player);
-                            
-                            break;
+                            player.shooting_cooldown_clock = 0;
+                            int i;
+                            for(i = 0; i < MAX_NUM_BULLETS ; i++)
+                            {
+                                if (bullets[i].exists == false)
+                                {
+                                    bullets[i].exists = true;
+                                    bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
+                                    bullet_set_state_from_player(&(bullets[i]), &player);
+                                    
+                                    break;
+                                }
+                            }
                         }
+                        break;
                     }
                 }
 
                 break;
             }
+            
 
             default:
             {
@@ -120,30 +164,8 @@ void update(double delta_time)
             player.transform.rotation = PI - player.transform.rotation;
     }
 
-    /*
-    if (SDL_GameControllerGetButton(gamepad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER))
-    {
-        if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
-        {
-            player.shooting_cooldown_clock = 0;
-            int i;
-            for(i = 0; i < MAX_NUM_BULLETS ; i++)
-            {
-                if (bullets[i].exists == false)
-                {
-                    bullets[i].exists = true;
-                    bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
-                    bullet_set_state_from_player(&(bullets[i]), &player);
-                    
-                    break;
-                }
-            }
-        }
-    }
-    */
 
 
-    {
     const Uint8* keyboard_state;
     keyboard_state = SDL_GetKeyboardState(NULL);
     
@@ -152,26 +174,86 @@ void update(double delta_time)
         game_running = false;
     }
 
+    if (keyboard_state[SDL_SCANCODE_W])
     {
-    if (keyboard_state[SDL_SCANCODE_UP])
-    {
-        if (keyboard_state[SDL_SCANCODE_LSHIFT])
-            camera_zoom(pow(CAMERA_SPEED_S, delta_time));
+        if (keyboard_state[SDL_SCANCODE_A])
+        {
+            player.velocity.x = - PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+            player.velocity.y = - PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+        }
+        else if (keyboard_state[SDL_SCANCODE_D])
+        {
+            player.velocity.x = PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+            player.velocity.y = - PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+        }
         else
-            camera_move(0, - CAMERA_SPEED_S * delta_time);
+        {
+            player.velocity.y = - PLAYER_SPEED;
+            player.velocity.x = 0;
+        }
+
+
     }
-    else if (keyboard_state[SDL_SCANCODE_DOWN])
+    else if (keyboard_state[SDL_SCANCODE_S])
     {
-        if (keyboard_state[SDL_SCANCODE_LSHIFT])
-            camera_zoom(pow((1.0 / CAMERA_SPEED_S), delta_time));
+        if (keyboard_state[SDL_SCANCODE_A])
+        {
+            player.velocity.x = - PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+            player.velocity.y = PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+        }
+        else if (keyboard_state[SDL_SCANCODE_D])
+        {
+            player.velocity.x = PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+            player.velocity.y = PLAYER_SPEED * DIAGONAL_MOVEMENT_FACTOR;
+        }
         else
-            camera_move(0,  CAMERA_SPEED_S * delta_time);
+        {
+            player.velocity.y = PLAYER_SPEED;
+            player.velocity.x = 0;
+        }
+
+    }
+    else if (keyboard_state[SDL_SCANCODE_A])
+    {
+        player.velocity.y = 0;
+        player.velocity.x = - PLAYER_SPEED;
+
+    }
+    else if (keyboard_state[SDL_SCANCODE_D])
+    {
+        player.velocity.y = 0;
+        player.velocity.x = PLAYER_SPEED;
+
+    }
+
+    if (keyboard_state[SDL_SCANCODE_DOWN])
+    {
+        if (keyboard_state[SDL_SCANCODE_LEFT])
+            player.transform.rotation = PI * 0.75;
+        else if (keyboard_state[SDL_SCANCODE_RIGHT])
+            player.transform.rotation = PI / 4.0;
+        else
+            player.transform.rotation = PI / 2.0;
+
+    }
+    else if (keyboard_state[SDL_SCANCODE_UP])
+    {
+        if (keyboard_state[SDL_SCANCODE_LEFT])
+            player.transform.rotation = PI * 1.25;
+        else if (keyboard_state[SDL_SCANCODE_RIGHT])
+            player.transform.rotation = PI * 1.75;
+        else
+            player.transform.rotation = PI * 1.5;
     }
     else if (keyboard_state[SDL_SCANCODE_LEFT])
-        camera_move(- CAMERA_SPEED_S * delta_time, 0);
-    else if (keyboard_state[SDL_SCANCODE_RIGHT])
-        camera_move( CAMERA_SPEED_S * delta_time, 0);
+    {
+        player.transform.rotation = PI;
+
     }
+    else if (keyboard_state[SDL_SCANCODE_RIGHT])
+    {
+        player.transform.rotation = 0;
+
     }
 
 

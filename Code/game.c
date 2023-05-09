@@ -6,6 +6,7 @@
 #include "gameloop.h"
 
 #define RADIAN_DEGREE_CONVERSION_FACTOR (57.295779513)
+#define PI 3.1415926
 
 #define TICKRATE 30
 const double tick_duration = (1.0 / (double)TICKRATE);
@@ -115,17 +116,23 @@ int setup()
     {
         zombies[i].exists = false;
     }
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 7; i++)
     {
         zombies[i].exists = true;
         zombies[i].spritesheet.texture = zombie_texture;
         zombies[i].spritesheet.sprite = NULL;
         zombies[i].velocity.x = 0;
         zombies[i].velocity.y = 0;
-        zombies[i].transform = (transform_t){.position = {7, -2}, .rotation = 0, .scale = {1, 1}};
         zombies[i].collider.radius = 0.5;
     }
 
+    zombies[0].transform = (transform_t){.position = {7, 2.5}, .rotation = 0, .scale = {1, 1}};
+    zombies[1].transform = (transform_t){.position = {-5, -0.5}, .rotation = PI, .scale = {1, 1}};
+    zombies[2].transform = (transform_t){.position = {-8, -7}, .rotation = 0, .scale = {1, 1}};
+    zombies[3].transform = (transform_t){.position = {2, 12}, .rotation = PI, .scale = {1, 1}};
+    zombies[4].transform = (transform_t){.position = {-4, -18}, .rotation = PI, .scale = {1, 1}};
+    zombies[5].transform = (transform_t){.position = {0, 10}, .rotation = PI, .scale = {1, 1}};
+    zombies[6].transform = (transform_t){.position = {5, -20}, .rotation = PI, .scale = {1, 1}};
 
 
 
