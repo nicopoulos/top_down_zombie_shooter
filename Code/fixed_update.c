@@ -21,7 +21,8 @@ extern bullet_t bullets[MAX_NUM_BULLETS];
 #define ZOMBIE_SPEED 2.5
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
 extern SDL_Texture* zombie_texture;
-extern float zombie_spawn_interval;
+#define BASE_ZOMBIE_SPAWN_INTERVAL 3
+double zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL;
 double zombie_spawn_cooldown = 0;
 
 
@@ -122,7 +123,9 @@ void fixed_update(double delta_time)
     }
 
 
-    // collision detection
+    // adjust spawn_interval
+    int exponent = player.score.value / 1000;
+    zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL * pow(0.9, exponent);
 
 
 

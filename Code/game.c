@@ -42,7 +42,6 @@ bullet_t bullets[MAX_NUM_BULLETS];
 
 #define MAX_NUM_ZOMBIES 30
 zombie_t zombies[MAX_NUM_ZOMBIES];
-float zombie_spawn_interval;
 
 int game()
 {
@@ -129,7 +128,6 @@ int setup()
         zombies[i].exists = false;
     }
 
-    zombie_spawn_interval = 3;
 
 
 
