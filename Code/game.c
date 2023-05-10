@@ -31,6 +31,8 @@ bool game_running;
 // ressources
 SDL_Texture* bullet_texture;
 SDL_Texture* zombie_texture;
+TTF_Font* score_font;
+SDL_Texture* heart_texture;
 
 // game objects
 player_t player;
@@ -40,7 +42,7 @@ bullet_t bullets[MAX_NUM_BULLETS];
 
 #define MAX_NUM_ZOMBIES 30
 zombie_t zombies[MAX_NUM_ZOMBIES];
-
+float zombie_spawn_interval;
 
 int game()
 {
@@ -88,13 +90,11 @@ int setup()
     camera_set_zoom(0.2);
 
     // player
-
     player.transform.position = (vector_t){.x = 0, .y = 0};
     player.transform.rotation = 0;
     player.transform.scale = (vector_t){.x = 1, .y = 1};
     player.velocity.x = 0;
     player.velocity.y = 0;
-    player.health = 100;
     player.ammunition = 50;
     player.spritesheet.texture = load_texture("Assets/Sprites/player.png");
     player.spritesheet.sprite = NULL;
@@ -102,6 +102,18 @@ int setup()
     player.collider.radius = 0.5;
     player.invincibility_cooldown_clock = 0;
     player.invincible = false;
+
+    // health
+    player.health = 5;
+    heart_texture = load_texture("Assets/Sprites/heart.png");
+
+
+    // score
+    update_score(&(player.score), 0);
+    score_font = TTF_OpenFont("Assets/Fonts/prstart.ttf", 36);
+
+
+
 
     // bullets
     bullet_texture = load_texture("Assets/Sprites/bullet_4.png");
@@ -116,23 +128,8 @@ int setup()
     {
         zombies[i].exists = false;
     }
-    for (int i = 0; i < 7; i++)
-    {
-        zombies[i].exists = true;
-        zombies[i].spritesheet.texture = zombie_texture;
-        zombies[i].spritesheet.sprite = NULL;
-        zombies[i].velocity.x = 0;
-        zombies[i].velocity.y = 0;
-        zombies[i].collider.radius = 0.5;
-    }
 
-    zombies[0].transform = (transform_t){.position = {7, 2.5}, .rotation = 0, .scale = {1, 1}};
-    zombies[1].transform = (transform_t){.position = {-5, -0.5}, .rotation = PI, .scale = {1, 1}};
-    zombies[2].transform = (transform_t){.position = {-8, -7}, .rotation = 0, .scale = {1, 1}};
-    zombies[3].transform = (transform_t){.position = {2, 12}, .rotation = PI, .scale = {1, 1}};
-    zombies[4].transform = (transform_t){.position = {-4, -18}, .rotation = PI, .scale = {1, 1}};
-    zombies[5].transform = (transform_t){.position = {0, 10}, .rotation = PI, .scale = {1, 1}};
-    zombies[6].transform = (transform_t){.position = {5, -20}, .rotation = PI, .scale = {1, 1}};
+    zombie_spawn_interval = 3;
 
 
 
@@ -143,6 +140,9 @@ int setup()
 void cleanup()
 {
     SDL_DestroyTexture(player.spritesheet.texture);
+    SDL_DestroyTexture(zombie_texture);
+    SDL_DestroyTexture(heart_texture);
     SDL_DestroyTexture(bullet_texture);
+    TTF_CloseFont(score_font);
 }
 

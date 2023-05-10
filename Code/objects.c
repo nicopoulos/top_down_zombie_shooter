@@ -2,6 +2,7 @@
 #include "Engine/_physics.h"
 #include <math.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define PI 3.1415926
 
@@ -9,6 +10,17 @@
 #define BULLET_HEIGHT 0.15
 #define BULLET_COLLIDER_RADIUS 0.15
 #define BULLET_SPEED 15
+
+void update_score(score_t* score, int value)
+{
+    if (value < 0)
+        return;
+
+    score->value = value;
+    SDL_itoa(score->value, score->string, 10);
+    score->num_characters = SDL_strlen(score->string);
+}
+
 
 void bullet_set_state_from_player(bullet_t* bullet, const player_t* player)
 {

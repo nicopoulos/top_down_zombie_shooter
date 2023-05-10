@@ -130,10 +130,37 @@ int set_render_colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     return SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
+SDL_Texture* text_to_texture(TTF_Font* font, const char* text, SDL_Color fg)
+{
+    SDL_Surface* temp = TTF_RenderText_Solid(font, text, fg);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_FreeSurface(temp);
+    return texture;
+}
+
 
 SDL_Texture* load_texture(const char* file)
 {
     return IMG_LoadTexture(renderer, file);
+}
+
+int draw_element(SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* dstrect)
+{
+    SDL_Rect temp_rect;
+    SDL_Rect* real_srcrect = NULL;
+    if (srcrect != NULL)
+    {
+        temp_rect = (SDL_Rect){.h = srcrect->h * virtual_pixel_height, .w = srcrect->w * virtual_pixel_width, .x = srcrect->x * virtual_pixel_width, .y = srcrect->y * virtual_pixel_height};
+        real_srcrect = &temp_rect;
+    }
+    SDL_Rect* real_dstrect = NULL;
+    if (dstrect != NULL)
+    {
+        temp_rect = (SDL_Rect){.h = dstrect->h * virtual_pixel_height, .w = dstrect->w * virtual_pixel_width, .x = dstrect->x * virtual_pixel_width, .y = dstrect->y * virtual_pixel_height};
+        real_dstrect = &temp_rect;
+    }
+
+    return SDL_RenderCopy(renderer, texture, real_srcrect, real_dstrect);
 }
 
 

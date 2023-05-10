@@ -2,6 +2,7 @@
 #include "objects.h"
 #include "Engine/engine.h"
 
+#include <time.h>
 #include <math.h>
 
 #define PI 3.1415926
@@ -19,9 +20,18 @@ extern bullet_t bullets[MAX_NUM_BULLETS];
 #define MAX_NUM_ZOMBIES 30
 #define ZOMBIE_SPEED 2.5
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
+extern SDL_Texture* zombie_texture;
+extern float zombie_spawn_interval;
+double zombie_spawn_cooldown = 0;
+
+
+bool spawn_zombie(const vector_t* spawn_point);
+vector_t get_rand_spawn_point();
+
 
 void fixed_update(double delta_time)
 {
+
     if (player.invincible)
     {
         player.invincibility_cooldown_clock += delta_time;
@@ -75,7 +85,7 @@ void fixed_update(double delta_time)
             // zombie collision with player
             if (collision_player_zombie(&player, &(zombies[i])) && player.invincible == false)
             {
-                player.health -= 20;
+                player.health--;
                 if (player.health <= 0)
                     game_running = false;
                 else
@@ -92,6 +102,7 @@ void fixed_update(double delta_time)
                     {
                         bullets[j].exists = false;
                         zombies[i].exists = false;
+                        update_score(&(player.score), player.score.value + 100);
                         break;
                     }
                 }
@@ -100,9 +111,86 @@ void fixed_update(double delta_time)
         }
     }
 
+    // spawn zombies
+    zombie_spawn_cooldown += delta_time;
+    while (zombie_spawn_cooldown >= zombie_spawn_interval)
+    {
+        vector_t spawn_point = get_rand_spawn_point();
+        if (spawn_zombie(&spawn_point))
+           zombie_spawn_cooldown -= zombie_spawn_interval;
+
+    }
+
 
     // collision detection
 
 
 
 }
+
+
+bool spawn_zombie(const vector_t* spawn_point)
+{
+    if (spawn_point == NULL)
+        return false;
+
+    for (int i = 0; i < MAX_NUM_ZOMBIES; i++)
+    {
+        if (zombies[i].exists == false)
+        {
+            zombies[i].exists = true;
+            zombies[i].spritesheet.texture = zombie_texture;
+            zombies[i].spritesheet.sprite = NULL;
+            zombies[i].velocity.x = 0;
+            zombies[i].velocity.y = 0;
+            zombies[i].collider.radius = 0.5;
+            zombies[i].transform.position = *spawn_point;
+            zombies[i].transform.scale = (vector_t){1, 1};
+            zombies[i].transform.rotation = 0;
+            return true;
+        }
+    }
+    return false;
+}
+
+vector_t get_rand_spawn_point()
+{
+    srand(time(0));
+    int spawn_point = rand() % 6;
+
+    vector_t vec;
+    switch(spawn_point)
+    {
+        case 0:
+            vec = (vector_t){12, 0};
+            break;
+
+        case 1:
+            vec = (vector_t){9, 7};
+            break;
+
+        case 2:
+            vec = (vector_t){-9, 7};
+            break;
+
+        case 3:
+            vec = (vector_t){-12, 0};
+            break;
+
+        case 4:
+            vec = (vector_t){-9, -7};
+            break;
+
+        case 5:
+            vec = (vector_t){9, -7};
+            break;
+
+        default:
+            break;
+    }
+
+    return vec;
+
+}
+
+

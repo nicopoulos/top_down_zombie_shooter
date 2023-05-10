@@ -37,6 +37,7 @@ extern bullet_t bullets[MAX_NUM_BULLETS];
 #define MAX_NUM_ZOMBIES 30
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
 
+
 void update(double delta_time)
 {
     player.shooting_cooldown_clock += delta_time;
@@ -293,3 +294,9 @@ void update(double delta_time)
 
 
 }
+
+
+
+
+
+
