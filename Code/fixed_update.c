@@ -8,12 +8,10 @@
 #define PI 3.1415926
 extern bool game_running;
 
-#define PLAYER_HORIZONTAL_BORDER 4
-#define PLAYER_VERTICAL_BORDER 3
 #define INVINCIBILITY_TIME 1.7
 extern player_t player;
 
-#define BULLET_DESPAWN_DISTANCE 13
+#define BULLET_DESPAWN_DISTANCE 15
 #define MAX_NUM_BULLETS 30
 extern bullet_t bullets[MAX_NUM_BULLETS];
 
@@ -209,6 +207,9 @@ bool spawn_zombie(const vector_t* spawn_point)
     }
     return false;
 }
+#define OUTER_SPAWNPOINTS_DX 18
+#define INNER_SPAWNPOINTS_DX 14
+#define INNER_SPAWNPOINTS_DY 12
 
 vector_t get_rand_spawn_point()
 {
@@ -219,27 +220,27 @@ vector_t get_rand_spawn_point()
     switch(spawn_point)
     {
         case 0:
-            vec = (vector_t){12, 0};
+            vec = (vector_t){OUTER_SPAWNPOINTS_DX, 0};
             break;
 
         case 1:
-            vec = (vector_t){9, 7};
+            vec = (vector_t){INNER_SPAWNPOINTS_DX, INNER_SPAWNPOINTS_DY};
             break;
 
         case 2:
-            vec = (vector_t){-9, 7};
+            vec = (vector_t){- INNER_SPAWNPOINTS_DX, INNER_SPAWNPOINTS_DY};
             break;
 
         case 3:
-            vec = (vector_t){-12, 0};
+            vec = (vector_t){- OUTER_SPAWNPOINTS_DX, 0};
             break;
 
         case 4:
-            vec = (vector_t){-9, -7};
+            vec = (vector_t){- INNER_SPAWNPOINTS_DX, - INNER_SPAWNPOINTS_DY};
             break;
 
         case 5:
-            vec = (vector_t){9, -7};
+            vec = (vector_t){INNER_SPAWNPOINTS_DX, - INNER_SPAWNPOINTS_DY};
             break;
 
         default:

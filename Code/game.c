@@ -86,7 +86,7 @@ int game()
 int setup()
 {
     set_render_colour(0x80, 0x80, 0x80, 0xff);
-    camera_set_zoom(0.2);
+    camera_set_zoom(0.12);
 
     // player
     player.transform.position = (vector_t){.x = 0, .y = 0};

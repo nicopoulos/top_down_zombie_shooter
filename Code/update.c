@@ -25,8 +25,8 @@ extern SDL_GameController* gamepad;
 extern SDL_Texture* bullet_texture;
 
 // game objects
-#define PLAYER_HORIZONTAL_BORDER 9
-#define PLAYER_VERTICAL_BORDER 4.7
+#define PLAYER_HORIZONTAL_BORDER 13
+#define PLAYER_VERTICAL_BORDER 7
 extern player_t player;
 extern bullet_t test_bullet;
 
@@ -63,6 +63,7 @@ void update(double delta_time)
                     }
                     case SDL_SCANCODE_SPACE:
                     {
+                        printf("space pressed\n");
                         if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
                         {
                             player.shooting_cooldown_clock = 0;
@@ -74,6 +75,7 @@ void update(double delta_time)
                                     bullets[i].exists = true;
                                     bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
                                     bullet_set_state_from_player(&(bullets[i]), &player);
+                                    printf("bullet shot\n");
                                     
                                     break;
                                 }
