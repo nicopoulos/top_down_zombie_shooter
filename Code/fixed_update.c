@@ -10,18 +10,17 @@ extern bool game_running;
 
 #define PLAYER_HORIZONTAL_BORDER 4
 #define PLAYER_VERTICAL_BORDER 3
-#define INVINCIBILITY_TIME 1.4
+#define INVINCIBILITY_TIME 1.7
 extern player_t player;
 
 #define BULLET_DESPAWN_DISTANCE 13
 #define MAX_NUM_BULLETS 30
 extern bullet_t bullets[MAX_NUM_BULLETS];
 
-#define MAX_NUM_ZOMBIES 30
-#define ZOMBIE_SPEED 2.5
+#define MAX_NUM_ZOMBIES 20
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
 extern SDL_Texture* zombie_texture;
-#define BASE_ZOMBIE_SPAWN_INTERVAL 3
+#define BASE_ZOMBIE_SPAWN_INTERVAL 1.5
 double zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL;
 double zombie_spawn_cooldown = 0;
 
@@ -69,9 +68,9 @@ void fixed_update(double delta_time)
             double dy = player.transform.position.y - zombies[i].transform.position.y;
 
             double hypothenuse = sqrt(pow(dx, 2) + pow(dy, 2));
-            if (hypothenuse >= 0.5)
+            if (hypothenuse >= player.collider.radius)
             {
-                double factor = ZOMBIE_SPEED / hypothenuse;
+                double factor = zombies[i].speed / hypothenuse;
                 zombies[i].velocity.x = factor * dx;
                 zombies[i].velocity.y = factor * dy;
                 zombies[i].transform.rotation = asin(dy / hypothenuse);
@@ -86,7 +85,7 @@ void fixed_update(double delta_time)
             // zombie collision with player
             if (collision_player_zombie(&player, &(zombies[i])) && player.invincible == false)
             {
-                player.health--;
+                player.health -= zombies[i].damage;
                 if (player.health <= 0)
                     game_running = false;
                 else
@@ -102,8 +101,26 @@ void fixed_update(double delta_time)
                     if (collision_bullet_zombie(&(bullets[j]), &(zombies[i])))
                     {
                         bullets[j].exists = false;
-                        zombies[i].exists = false;
-                        update_score(&(player.score), player.score.value + 100);
+                        zombies[i].health--;
+                        if (zombies[i].health <= 0)
+                        {
+                            zombies[i].exists = false;
+                            int points;
+                            switch(zombies[i].type)
+                            {
+                                case SMALL_ZOMBIE:
+                                    points = 50;
+                                    break;
+                                case BIG_ZOMBIE:
+                                    points = 200;
+                                    break;
+                                case MEDIUM_ZOMBIE:
+                                default:
+                                    points = 100;
+                                    break;
+                            }
+                            update_score(&(player.score), player.score.value + points);
+                        }
                         break;
                     }
                 }
@@ -114,7 +131,7 @@ void fixed_update(double delta_time)
 
     // spawn zombies
     zombie_spawn_cooldown += delta_time;
-    while (zombie_spawn_cooldown >= zombie_spawn_interval)
+    if (zombie_spawn_cooldown >= zombie_spawn_interval)
     {
         vector_t spawn_point = get_rand_spawn_point();
         if (spawn_zombie(&spawn_point))
@@ -125,7 +142,7 @@ void fixed_update(double delta_time)
 
     // adjust spawn_interval
     int exponent = player.score.value / 1000;
-    zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL * pow(0.9, exponent);
+    zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL * pow(0.95, exponent);
 
 
 
@@ -146,10 +163,47 @@ bool spawn_zombie(const vector_t* spawn_point)
             zombies[i].spritesheet.sprite = NULL;
             zombies[i].velocity.x = 0;
             zombies[i].velocity.y = 0;
-            zombies[i].collider.radius = 0.5;
-            zombies[i].transform.position = *spawn_point;
-            zombies[i].transform.scale = (vector_t){1, 1};
             zombies[i].transform.rotation = 0;
+
+            zombies[i].transform.position = *spawn_point;
+
+            int num = rand() % 9 + 1 ;
+            zombies[i].type = (num <= 2) ? SMALL_ZOMBIE : (num >= 8) ? BIG_ZOMBIE : MEDIUM_ZOMBIE;
+
+            switch(zombies[i].type)
+            {
+                case SMALL_ZOMBIE:
+                {
+                    zombies[i].speed = 4;
+                    zombies[i].transform.scale = (vector_t){0.7, 0.7};
+                    zombies[i].collider.radius = 0.35;
+                    zombies[i].health = 1;
+                    zombies[i].damage = 1;
+                    break;
+                }
+                case BIG_ZOMBIE:
+                {
+                    zombies[i].speed = 1.5;
+                    zombies[i].transform.scale = (vector_t){1.7, 1.7};
+                    zombies[i].collider.radius = 0.85;
+                    zombies[i].health = 3;
+                    zombies[i].damage = 4;
+                    break;
+                }
+                case MEDIUM_ZOMBIE:
+                default:
+                {
+                    zombies[i].speed = 2.5;
+                    zombies[i].transform.scale = (vector_t){1, 1};
+                    zombies[i].collider.radius = 0.5;
+                    zombies[i].health = 2;
+                    zombies[i].damage = 2;
+
+                    break;
+                }
+            }
+
+
             return true;
         }
     }

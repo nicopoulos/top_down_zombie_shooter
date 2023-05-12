@@ -147,12 +147,6 @@ SDL_Texture* load_texture(const char* file)
 int draw_element(SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* dstrect)
 {
     SDL_Rect temp_rect;
-    SDL_Rect* real_srcrect = NULL;
-    if (srcrect != NULL)
-    {
-        temp_rect = (SDL_Rect){.h = srcrect->h * virtual_pixel_height, .w = srcrect->w * virtual_pixel_width, .x = srcrect->x * virtual_pixel_width, .y = srcrect->y * virtual_pixel_height};
-        real_srcrect = &temp_rect;
-    }
     SDL_Rect* real_dstrect = NULL;
     if (dstrect != NULL)
     {
@@ -160,7 +154,7 @@ int draw_element(SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* 
         real_dstrect = &temp_rect;
     }
 
-    return SDL_RenderCopy(renderer, texture, real_srcrect, real_dstrect);
+    return SDL_RenderCopy(renderer, texture, srcrect, real_dstrect);
 }
 
 

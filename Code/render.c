@@ -47,11 +47,21 @@ void render()
     draw_element(score_texture, NULL, &score_dstrect);
 
     // palyer health
-    SDL_Rect heart_rect = {.h = 100, .w = 100, .x = 20, .y = 150};
-    for (int i = 0; i < player.health; i++)
+    SDL_Rect heart_dstrect = {.h = 100, .w = 100, .x = 20, .y = 150};
+    SDL_Rect half_heart_srcrect = {.w = 127, .h = 254, .x = 0, .y = 0};
+    for (int i = player.health; i > 0; i-= 2)
     {
-        draw_element(heart_texture, NULL, &heart_rect);
-        heart_rect.x += heart_rect.w;
+        if (i == 1)
+        {
+            heart_dstrect.w /= 2;
+            draw_element(heart_texture, &half_heart_srcrect, &heart_dstrect);
+        }
+        else
+        {
+
+            draw_element(heart_texture, NULL, &heart_dstrect);
+        }
+        heart_dstrect.x += heart_dstrect.w;
     }
 
 

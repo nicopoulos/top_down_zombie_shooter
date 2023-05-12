@@ -40,7 +40,7 @@ player_t player;
 #define MAX_NUM_BULLETS 30
 bullet_t bullets[MAX_NUM_BULLETS];
 
-#define MAX_NUM_ZOMBIES 30
+#define MAX_NUM_ZOMBIES 20
 zombie_t zombies[MAX_NUM_ZOMBIES];
 
 int game()
@@ -66,12 +66,12 @@ int game()
 
 
         update(delta_time);
-        render();
         while (accumulator >= tick_duration)
         {
             fixed_update(accumulator);
             accumulator -= tick_duration;
         }
+        render();
 
 
 
@@ -94,7 +94,6 @@ int setup()
     player.transform.scale = (vector_t){.x = 1, .y = 1};
     player.velocity.x = 0;
     player.velocity.y = 0;
-    player.ammunition = 50;
     player.spritesheet.texture = load_texture("Assets/Sprites/player.png");
     player.spritesheet.sprite = NULL;
     player.shooting_cooldown_clock = 0;
@@ -103,7 +102,7 @@ int setup()
     player.invincible = false;
 
     // health
-    player.health = 5;
+    player.health = 16;
     heart_texture = load_texture("Assets/Sprites/heart.png");
 
 

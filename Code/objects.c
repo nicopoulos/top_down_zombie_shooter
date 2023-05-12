@@ -51,3 +51,6 @@ bool collision_bullet_zombie(const bullet_t* bullet, const zombie_t* zombie)
 {
     return collision_detected(&(bullet->collider), &(bullet->transform), &(zombie->collider), &(zombie->transform));
 }
+
+
+

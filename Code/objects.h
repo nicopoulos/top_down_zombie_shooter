@@ -18,7 +18,6 @@ typedef struct player_t
     circle_collider_t collider;
     int health;
     score_t score;
-    unsigned int ammunition;
     double shooting_cooldown_clock;
     double invincibility_cooldown_clock;
     bool invincible;
@@ -37,12 +36,23 @@ typedef struct bullet_t
 
 } bullet_t;
 
+typedef enum zombie_type_t
+{
+    SMALL_ZOMBIE,
+    MEDIUM_ZOMBIE,
+    BIG_ZOMBIE
+} zombie_type_t;
+
 typedef struct zombie_t
 {
     transform_t transform;
     spritesheet_t spritesheet;
     vector_t velocity;
     circle_collider_t collider;
+    zombie_type_t type;
+    double speed;
+    int health;
+    int damage;
     bool exists;
 
 } zombie_t;

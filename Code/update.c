@@ -15,7 +15,7 @@
 #define JOYSTICK_MIN_VALUE 20000
 
 #define PLAYER_SPEED 5
-#define SHOOTING_COOLDOWN 0.3
+#define SHOOTING_COOLDOWN 0.15
 
 
 extern bool game_running;
@@ -34,7 +34,7 @@ extern bullet_t test_bullet;
 extern bullet_t bullets[MAX_NUM_BULLETS];
 
 
-#define MAX_NUM_ZOMBIES 30
+#define MAX_NUM_ZOMBIES 20
 extern zombie_t zombies[MAX_NUM_ZOMBIES];
 
 
