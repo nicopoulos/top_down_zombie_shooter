@@ -140,7 +140,7 @@ void fixed_update(double delta_time)
 
     // adjust spawn_interval
     int exponent = player.score.value / 1000;
-    zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL * pow(0.95, exponent);
+    zombie_spawn_interval = BASE_ZOMBIE_SPAWN_INTERVAL * pow(0.97, exponent);
 
 
 

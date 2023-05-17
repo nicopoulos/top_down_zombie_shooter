@@ -63,7 +63,6 @@ void update(double delta_time)
                     }
                     case SDL_SCANCODE_SPACE:
                     {
-                        printf("space pressed\n");
                         if (player.shooting_cooldown_clock >= SHOOTING_COOLDOWN)
                         {
                             player.shooting_cooldown_clock = 0;
@@ -75,7 +74,6 @@ void update(double delta_time)
                                     bullets[i].exists = true;
                                     bullets[i].spritesheet = (spritesheet_t){.sprite = NULL, .texture = bullet_texture};
                                     bullet_set_state_from_player(&(bullets[i]), &player);
-                                    printf("bullet shot\n");
                                     
                                     break;
                                 }

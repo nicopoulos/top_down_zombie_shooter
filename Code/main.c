@@ -2,6 +2,7 @@
 
 #include "Engine/engine.h"
 #include "game.h"
+#include "title.h"
 
 SDL_GameController* gamepad;
 
@@ -16,7 +17,8 @@ int main()
         fprintf(stderr, "%s\n", SDL_GetError());
     }
 
-    game();
+    title_screen();
+
 
 
     engine_quit(); // doesn't do anything
